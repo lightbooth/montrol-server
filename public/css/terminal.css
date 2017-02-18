@@ -1,0 +1,40 @@
+html {
+  box-sizing: border-box;
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+html, body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  background: #333;
+}
+
+#terminal {
+  position: absolute;
+  top: 36px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: black;
+}
+
+#status {
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  height: 36px;
+  line-height: 36px;
+  background: rgba(0,0,0,0.5);
+  color: white;
+  text-align: center;
+  margin: 0;
+}
+
+#terminal.dragging {
+  border: 5px dashed #999;
+  opacity: 0.5;
+}

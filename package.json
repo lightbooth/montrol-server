@@ -1,0 +1,21 @@
+{
+  "name": "montrol-server",
+  "version": "0.1.0",
+  "description": "The montrol server MONitors & conTROLs client devices",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github:montrol/montrol-server.git"
+  },
+  "author": "Rasmus Porsager <rasmus@porsager.com",
+  "dependencies": {
+    "busboy": "0.2.14",
+    "express": "4.14.1",
+    "node-uuid": "1.4.7",
+    "pws": "0.2.2",
+    "uws": "0.12.0"
+  }
+}
