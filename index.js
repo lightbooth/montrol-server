@@ -2,14 +2,15 @@ const log = require('./log')
     , http = require('http')
     , path = require('path')
     , https = require('https')
+    , auth = require('basic-auth')
     , config = require('./config')
     , express = require('express')
+    , Device = require('./models/device')
     , devices = require('./routes/devices')
-    , auth = require('basic-auth')
 
 const app = express()
 
-router.get('/:mac', (req, res, next) => {
+app.get('/:mac', (req, res, next) => {
   req.ws ? Device.handle(req.ws, req.params.mac) : next()
 })
 
