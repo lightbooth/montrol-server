@@ -8,6 +8,13 @@ const log = require('./log')
 
 const app = express()
 
+app.use((req, res, next) => {
+  if (config.tempPassword && config.tempPassword !== req.query.key)
+    return res.sendStatus(401)
+
+  next()
+})
+
 app.use('/devices', devices)
 app.use(express.static(path.join(__dirname, 'public')))
 

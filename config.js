@@ -8,7 +8,8 @@ const config = module.exports = {
   sslCertPath   : process.env.SSL_CERTIFICATE_PATH,
   sslKeyPath    : process.env.SSL_PRIVATE_KEY_PATH,
   pingTimeout   : process.env.PING_TIMEOUT || 25 * 1000,
-  pongTimeout   : process.env.PONG_TIMEOUT || 10 * 1000
+  pongTimeout   : process.env.PONG_TIMEOUT || 10 * 1000,
+  tempPassword  : process.env.TEMP_PASSWORD
 }
 
 config.https = config.sslKeyPath && config.sslCertPath ? {
