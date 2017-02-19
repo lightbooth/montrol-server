@@ -11,7 +11,7 @@
     3: 'right'
   }
 
-  const url = 'ws://' + window.location.host + window.location.pathname
+  const url = 'ws://' + window.location.host + window.location.pathname + window.location.search
 
   document.title = 'desk:' + window.location.pathname.split('/')[2]
 
@@ -23,14 +23,11 @@
 
   socket.onopen = () => {
     log('connected')
-    let init = true
     socket.onmessage = e => {
       if (typeof e.data === 'string')
         return log(e.data)
 
       ui.screen.src = window.URL.createObjectURL(e.data)
-      ui.screen.onload = init && (() => ratio = ui.screen.width / ui.screen.height)
-      init = false
     }
   }
 

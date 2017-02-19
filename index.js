@@ -2,7 +2,6 @@ const log = require('./log')
     , http = require('http')
     , path = require('path')
     , https = require('https')
-    , auth = require('basic-auth')
     , config = require('./config')
     , express = require('express')
     , Device = require('./models/device')
@@ -14,12 +13,10 @@ app.get('/devices/:mac', (req, res, next) => {
   req.ws ? Device.handle(req.ws, req.params.mac) : next()
 })
 
-app.use((req, res, next) => {
-  if (!config.baPassword)
-    return next()
+app.use(express.static(path.join(__dirname, 'public')))
 
-  const user = auth(req)
-  if (user && user.name === config.baUser && user.pass === config.baPassword)
+app.use((req, res, next) => {
+  if (!config.tempPassword || req.query.key === config.tempPassword)
     return next()
 
   res.statusCode = 401
@@ -28,7 +25,6 @@ app.use((req, res, next) => {
 })
 
 app.use('/devices', devices)
-app.use(express.static(path.join(__dirname, 'public')))
 
 const server = config.https
     ? https.createServer(config.https, app)

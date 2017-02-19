@@ -7,7 +7,7 @@
   }
 
   const term = new window.Terminal()
-      , url = 'ws://' + window.location.host + window.location.pathname
+      , url = 'ws://' + window.location.host + window.location.pathname + window.location.search
 
   let destination = '~'
 
