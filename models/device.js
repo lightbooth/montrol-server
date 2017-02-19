@@ -21,6 +21,8 @@ Device.send = function(mac, data) {
 
 Device.handle = function(args, mac) {
   wss.handleUpgrade(...args, socket => {
+    disconnectPrevious(mac)
+
     const device = new events.EventEmitter()
     device.send = function(data) {
       heartbeat(socket)
@@ -37,12 +39,9 @@ Device.handle = function(args, mac) {
 
     heartbeat(socket)
 
-    socket.on('close', () => {
-      Device.emit('disconnected', device)
-      log(socket.ip, 'Device', mac, 'disconnected')
-    })
+    socket.onclose = () => closed(device)
 
-    socket.on('message', data => {
+    socket.onmessage = function(data) {
       clearTimeout(socket.pongTimeout)
 
       if (typeof data !== 'string')
@@ -59,8 +58,23 @@ Device.handle = function(args, mac) {
 
       if (data.startsWith('fs.'))
         return Device.emit('fs', device, data.slice(3))
-    })
+    }
   })
+}
+
+function closed(device) {
+  if (devices.get(device.mac) === device)
+    devices.delete(device.mac)
+
+  Device.emit('disconnected', device)
+  log(device.ip, 'Device', device.mac, 'disconnected')
+}
+
+function disconnectPrevious(mac) {
+  const device = devices.get(mac)
+
+  if (device)
+    closed(device)
 }
 
 function heartbeat(socket) {
