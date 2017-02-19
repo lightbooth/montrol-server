@@ -20,7 +20,6 @@ app.use((req, res, next) => {
     return next()
 
   res.statusCode = 401
-  res.setHeader('WWW-Authenticate', 'Basic realm="montrol"')
   res.end('Access denied')
 })
 

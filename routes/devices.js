@@ -14,8 +14,8 @@ module.exports = router
 router.get('/', (req, res) => {
   res.send(Array.from(Device.keys()).map(d => `<p>
     ${d}:
-    <a href="${ d }/terminals/00000000000000000000000000000000?key=${ config.tempPassword }">terminal</a>
-    <a href="${ d }/desktop?key=${ config.tempPassword }">desktop</a>
+    <a href="/devices/${ d }/terminals/00000000000000000000000000000000?key=${ config.tempPassword }">terminal</a>
+    <a href="/devices/${ d }/desktop?key=${ config.tempPassword }">desktop</a>
     </p>
   `).join(''))
 })
