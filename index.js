@@ -10,7 +10,7 @@ const log = require('./log')
 
 const app = express()
 
-app.get('/:mac', (req, res, next) => {
+app.get('/devices/:mac', (req, res, next) => {
   req.ws ? Device.handle(req.ws, req.params.mac) : next()
 })
 
