@@ -9,6 +9,7 @@ const log = require('./log')
 
 const app = express()
 
+app.use(express.static(path.join(__dirname, 'public')))
 app.get('/devices/:mac', (req, res, next) => {
   req.ws ? Device.handle(req.ws, req.params.mac) : next()
 })
@@ -21,7 +22,6 @@ app.use((req, res, next) => {
 })
 
 app.use('/devices', devices)
-app.use(express.static(path.join(__dirname, 'public')))
 
 const server = config.https
     ? https.createServer(config.https, app)
