@@ -24,6 +24,7 @@ Device.handle = function(args, mac) {
     disconnectPrevious(mac)
 
     const device = new events.EventEmitter()
+    device.socket = socket
     device.send = function(data) {
       heartbeat(socket)
       socket.send(data, log.ifError)
@@ -39,9 +40,9 @@ Device.handle = function(args, mac) {
 
     heartbeat(socket)
 
-    socket.onclose = () => closed(device)
+    socket.on('close', () => closed(device))
 
-    socket.onmessage = function(data) {
+    socket.on('message', function(data) {
       clearTimeout(socket.pongTimeout)
 
       if (typeof data !== 'string')
@@ -58,7 +59,7 @@ Device.handle = function(args, mac) {
 
       if (data.startsWith('fs.'))
         return Device.emit('fs', device, data.slice(3))
-    }
+    })
   })
 }
 
@@ -73,8 +74,12 @@ function closed(device) {
 function disconnectPrevious(mac) {
   const device = devices.get(mac)
 
-  if (device)
-    closed(device)
+  if (!device)
+    return
+
+  device.socket.removeAllListeners('close')
+  device.socket.removeAllListeners('message')
+  closed(device)
 }
 
 function heartbeat(socket) {
