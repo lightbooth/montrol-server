@@ -11,7 +11,7 @@
     3: 'right'
   }
 
-  const url = 'ws://' + window.location.host + window.location.pathname + window.location.search
+  const url = 'wss://' + window.location.host + window.location.pathname + window.location.search
 
   document.title = 'desk:' + window.location.pathname.split('/')[2]
 
