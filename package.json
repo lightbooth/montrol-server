@@ -12,6 +12,7 @@
   },
   "author": "Rasmus Porsager <rasmus@porsager.com",
   "dependencies": {
+    "basic-auth": "1.1.0",
     "busboy": "0.2.14",
     "express": "4.14.1",
     "pws": "0.2.2",
