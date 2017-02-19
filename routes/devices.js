@@ -19,6 +19,17 @@ router.get('/', (req, res) => {
   `).join(''))
 })
 
+router.get('/:mac', (req, res, next) => {
+  req.ws ? Device.handle(req.ws, req.params.mac) : next()
+})
+
+router.get('/:mac', (req, res, next) => {
+  if (req.ws)
+    return Device.handle(req.ws, req.params.mac)
+
+  next()
+})
+
 router.get('/:mac/desktop', (req, res, next) => {
   if (req.ws)
     return Desktop.handle(req.ws, req.params.mac)

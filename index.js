@@ -6,22 +6,25 @@ const log = require('./log')
     , express = require('express')
     , Device = require('./models/device')
     , devices = require('./routes/devices')
+    , auth = require('basic-auth')
 
 const app = express()
 
-app.use(express.static(path.join(__dirname, 'public')))
-app.get('/devices/:mac', (req, res, next) => {
-  req.ws ? Device.handle(req.ws, req.params.mac) : next()
-})
-
 app.use((req, res, next) => {
-  if (config.tempPassword && config.tempPassword !== req.query.key)
-    return res.sendStatus(401)
+  if (!config.baPassword)
+    return next()
 
-  next()
+  const user = auth(req)
+  if (user.name === config.baUser && user.pass === config.baPassword)
+    return next()
+
+  res.statusCode = 401
+  res.setHeader('WWW-Authenticate', 'Basic realm="montrol"')
+  res.end('Access denied')
 })
 
 app.use('/devices', devices)
+app.use(express.static(path.join(__dirname, 'public')))
 
 const server = config.https
     ? https.createServer(config.https, app)
