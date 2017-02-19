@@ -9,6 +9,10 @@ const log = require('./log')
 
 const app = express()
 
+router.get('/:mac', (req, res, next) => {
+  req.ws ? Device.handle(req.ws, req.params.mac) : next()
+})
+
 app.use((req, res, next) => {
   if (!config.baPassword)
     return next()
