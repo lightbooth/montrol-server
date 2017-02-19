@@ -11,7 +11,7 @@ const app = express()
 
 app.enable('trust proxy')
 app.get('/devices/:mac', (req, res, next) => {
-  req.ws ? Device.handle(req.ws, req.params.mac) : next()
+  req.ws ? Device.handle(req.ws, req.ip, req.params.mac) : next()
 })
 
 app.use(express.static(path.join(__dirname, 'public')))

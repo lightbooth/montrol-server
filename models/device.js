@@ -19,7 +19,7 @@ Device.send = function(mac, data) {
     device.send(data)
 }
 
-Device.handle = function(args, mac) {
+Device.handle = function(args, ip, mac) {
   wss.handleUpgrade(...args, socket => {
     disconnectPrevious(mac)
 
@@ -30,7 +30,7 @@ Device.handle = function(args, mac) {
       socket.send(data, log.ifError)
     }
     device.mac = mac
-    device.ip = args[0].ip
+    device.ip = ip
 
     log(device.ip, 'Device', mac, 'connected')
 
