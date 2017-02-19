@@ -30,7 +30,7 @@ Device.handle = function(args, mac) {
       socket.send(data, log.ifError)
     }
     device.mac = mac
-    device.ip = getIp(...args)
+    device.ip = args[0].ip
 
     log(device.ip, 'Device', mac, 'connected')
 
@@ -88,10 +88,4 @@ function heartbeat(socket) {
     socket.send('ping.' + Date.now())
     socket.pongTimeout = setTimeout(() => socket.close(), config.pongTimeout)
   }, config.pingTimeout)
-}
-
-function getIp(req) {
-  return (req.headers['x-forwarded-for'] && req.headers['x-forwarded-for'][0])
-      || req.connection.remoteAddress
-      || req.socket.remoteAddress
 }
