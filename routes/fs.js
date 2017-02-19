@@ -1,5 +1,5 @@
 const path = require('path')
-    , uuid = require('node-uuid')
+    , uuid = require('uuid')
     , Busboy = require('busboy')
     , express = require('express')
     , FS = require('../models/fs')

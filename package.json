@@ -14,8 +14,8 @@
   "dependencies": {
     "busboy": "0.2.14",
     "express": "4.14.1",
-    "node-uuid": "1.4.7",
     "pws": "0.2.2",
+    "uuid": "3.0.1",
     "uws": "0.12.0"
   }
 }

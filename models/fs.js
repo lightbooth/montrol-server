@@ -1,6 +1,6 @@
 const uws = require('uws')
     , Device = require('./device')
-    , uuid = require('node-uuid')
+    , uuid = require('uuid')
 
 const FS = module.exports
     , wss = new uws.Server({ noServer: true })

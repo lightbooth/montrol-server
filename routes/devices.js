@@ -2,7 +2,7 @@ const express = require('express')
     , Device = require('../models/device')
     , Desktop = require('../models/desktop')
     , Terminal = require('../models/terminal')
-    , uuid = require('node-uuid')
+    , uuid = require('uuid')
     , path = require('path')
     , FS = require('../models/fs')
 
