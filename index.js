@@ -4,7 +4,6 @@ const log = require('./log')
     , https = require('https')
     , config = require('./config')
     , express = require('express')
-    , Device = require('./models/device')
     , devices = require('./routes/devices')
     , auth = require('basic-auth')
 
@@ -15,7 +14,7 @@ app.use((req, res, next) => {
     return next()
 
   const user = auth(req)
-  if (user.name === config.baUser && user.pass === config.baPassword)
+  if (user && user.name === config.baUser && user.pass === config.baPassword)
     return next()
 
   res.statusCode = 401
