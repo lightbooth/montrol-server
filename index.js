@@ -4,9 +4,14 @@ const log = require('./log')
     , https = require('https')
     , config = require('./config')
     , express = require('express')
+    , Device = require('./models/device')
     , devices = require('./routes/devices')
 
 const app = express()
+
+app.get('/devices/:mac', (req, res, next) => {
+  req.ws ? Device.handle(req.ws, req.params.mac) : next()
+})
 
 app.use((req, res, next) => {
   if (config.tempPassword && config.tempPassword !== req.query.key)
