@@ -46,22 +46,13 @@
     socket.send('mouse.move.' + pos)
   )
 
-  ui.screen.onmousedown = getPosition((pos, button) => {
+  ui.screen.onclick = getPosition((pos, button) => {
     socket.send('mouse.move.' + pos)
-    socket.send('mouse.down.' + buttons[button])
+    socket.send('mouse.click.' + buttons[button])
   })
 
-  ui.screen.onmouseup = getPosition((pos, button) => {
-    socket.send('mouse.move.' + pos)
-    socket.send('mouse.up.' + buttons[button])
-  })
-
-  document.onkeyup = getKey(key =>
-    socket.send('keyboard.up.' + key)
-  )
-
-  document.onkeydown = getKey(key =>
-    socket.send('keyboard.down.' + key)
+  document.onkeypress = getKey(key =>
+    socket.send('keyboard.press.' + key)
   )
 
   document.onmousewheel = e => {
