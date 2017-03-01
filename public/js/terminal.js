@@ -7,7 +7,7 @@
   }
 
   const term = new window.Terminal()
-      , protocol = window.protocol === 'https:' ? 'wss://' : 'ws://'
+      , protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
       , url = protocol + window.location.host + window.location.pathname + window.location.search
 
   let destination = '~'

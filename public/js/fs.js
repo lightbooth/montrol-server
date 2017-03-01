@@ -5,7 +5,7 @@
   const handlers = new Map()
       , fs = {}
 
-  const protocol = window.protocol === 'https:' ? 'wss://' : 'ws://'
+  const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
       , url = protocol + window.location.host + window.location.pathname + '?id=' + guid()
       , socket = new window.PersistentWebSocket(url)
 

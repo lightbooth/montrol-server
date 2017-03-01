@@ -11,9 +11,9 @@
     3: 'right'
   }
 
-  const protocol = window.protocol === 'https:' ? 'wss://' : 'ws://'
+  const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
   const url = protocol + window.location.host + window.location.pathname + window.location.search
-
+  console.log(url)
   document.title = 'desk:' + window.location.pathname.split('/')[2]
 
   let mouseover = false
