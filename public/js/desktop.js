@@ -11,15 +11,15 @@
     3: 'right'
   }
 
-  const url = 'wss://' + window.location.host + window.location.pathname + window.location.search
+  const protocol = window.protocol === 'https' ? 'wss://' : 'ws://'
+  const url = protocol + window.location.host + window.location.pathname + window.location.search
 
   document.title = 'desk:' + window.location.pathname.split('/')[2]
 
   let mouseover = false
 
   log('connecting')
-  const socket = new window.PersistentWebSocket(url)
-  socket.pingTimeout = false
+  const socket = new window.PersistentWebSocket(url, { pingTimeout: false })
 
   socket.onopen = () => {
     log('connected')

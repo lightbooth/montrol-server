@@ -1,15 +1,34 @@
 (function() {
-  function PersistentWebSocket(url, protocols, WebSocket) {
+  function PersistentWebSocket(url, protocols, WebSocket, options) {
     if (typeof protocols === 'function') {
       WebSocket = protocols
-      protocols = null
+      protocols = undefined
+    }
+
+    if (!Array.isArray(protocols) && typeof protocols === 'object') {
+      options = protocols
+      protocols = undefined
+    }
+
+    if (typeof WebSocket === 'object') {
+      options = WebSocket
+      WebSocket = undefined
+    }
+
+    if (!WebSocket) {
+      if (typeof window !== 'undefined') {
+        WebSocket = window.WebSocket
+        typeof window !== 'undefined'
+          && typeof window.addEventListener === 'function'
+          && window.addEventListener('online', connect)
+      }
     }
 
     if (!WebSocket)
-      WebSocket = typeof window !== 'undefined' && window.WebSocket
-
-    if (!WebSocket)
       throw new Error('Please supply a websocket library to use')
+
+    if (!options)
+      options = {}
 
     var connection = null
       , reconnecting = false
@@ -33,11 +52,11 @@
       },
       connect: connect,
       url: url,
-      pingTimeout: 30 * 1000,
-      maxTimeout: 5 * 60 * 1000,
-      maxRetries: 0,
       retries: 0,
-      nextReconnectDelay: function reconnectTimeout(retries) {
+      pingTimeout: options.pingTimeout || 30 * 1000,
+      maxTimeout: options.maxTimeout || 5 * 60 * 1000,
+      maxRetries: options.maxRetries || 0,
+      nextReconnectDelay: options.nextReconnectDelay || function reconnectTimeout(retries) {
         return Math.min((1 + Math.random()) * Math.pow(1.5, retries) * 1000, api.maxTimeout)
       },
       send: function() {
@@ -66,31 +85,42 @@
         clean(connection)
 
       reconnecting = false
-      connection = new WebSocket(api.url, protocols)
+
+      connection = new WebSocket(api.url, protocols, options)
 
       if (binaryType)
         connection.binaryType = binaryType
 
-      connection.onopen = function() {
-        heartbeat()
-        api.retries = 0
-        api.onopen.apply(connection, arguments)
-      }
+      connection.onclose = onclose
+      connection.onerror = onerror
+      connection.onopen = onopen
+      connection.onmessage = onmessage
+    }
 
-      connection.onclose = function(event) {
-        connection.onclose = null
-        event.reconnectDelay = Math.ceil(reconnect())
-        api.onclose.call(connection, event)
-      }
+    function onclose(event) {
+      connection.onclose = noop
+      event.reconnectDelay = Math.ceil(reconnect())
+      api.onclose.call(connection, event)
+    }
 
-      connection.onerror = function(event) {
-        api.onerror.apply(connection, arguments)
-      }
+    function onerror(event) {
+      if (!event)
+        event = new Error('UnknownError')
 
-      connection.onmessage = function() {
-        heartbeat()
-        api.onmessage.apply(connection, arguments)
-      }
+      event.reconnectDelay = Math.ceil(reconnect())
+      api.onclose.call(connection, event)
+      api.onerror(event)
+    }
+
+    function onopen() {
+      heartbeat()
+      api.retries = 0
+      api.onopen.apply(connection, arguments)
+    }
+
+    function onmessage() {
+      heartbeat()
+      api.onmessage.apply(connection, arguments)
     }
 
     function heartbeat() {
@@ -108,15 +138,19 @@
 
       event.code = 4663
       event.reason = 'No heartbeat received in due time'
-      connection.onclose(event)
+
+      onclose(event)
       connection.close(event.code, event.reason)
     }
 
     function reconnect() {
       if (reconnecting)
-        return
+        return Date.now() - reconnecting
 
-      reconnecting = true
+      if (connection)
+        clean(connection)
+
+      reconnecting = Date.now()
       api.retries++
 
       if (api.maxRetries && api.retries >= api.maxRetries)
@@ -130,10 +164,10 @@
     }
 
     function clean(connection) {
-      connection.onclose = null
-      connection.onopen = null
-      connection.onerror = null
-      connection.onmessage = null
+      connection.onclose = noop
+      connection.onopen = noop
+      connection.onerror = noop
+      connection.onmessage = noop
 
       connection.close()
     }
