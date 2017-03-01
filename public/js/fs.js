@@ -5,7 +5,8 @@
   const handlers = new Map()
       , fs = {}
 
-  const url = 'wss://' + window.location.host + window.location.pathname + '?id=' + guid()
+  const protocol = window.protocol === 'https:' ? 'wss://' : 'ws://'
+      , url = protocol + window.location.host + window.location.pathname + '?id=' + guid()
       , socket = new window.PersistentWebSocket(url)
 
   let selected = ['/']

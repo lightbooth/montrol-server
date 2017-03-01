@@ -11,7 +11,7 @@
     3: 'right'
   }
 
-  const protocol = window.protocol === 'https' ? 'wss://' : 'ws://'
+  const protocol = window.protocol === 'https:' ? 'wss://' : 'ws://'
   const url = protocol + window.location.host + window.location.pathname + window.location.search
 
   document.title = 'desk:' + window.location.pathname.split('/')[2]
