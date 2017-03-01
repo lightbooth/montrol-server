@@ -83,7 +83,7 @@
     destination = window.prompt('Destination', destination) || '~'
 
     xhr.open('POST'
-      , url + '/fs?path=' + encodeURIComponent(destination)
+      , url + '/fs' + (window.location.search || '?') + '&path=' + encodeURIComponent(destination)
       , true)
 
     xhr.upload.onprogress = (e) => ui.status.innerText = Math.round((e.loaded / e.total) * 100) + '%'
