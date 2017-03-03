@@ -14,6 +14,7 @@
   "dependencies": {
     "busboy": "0.2.14",
     "express": "4.14.1",
+    "morgan": "1.8.1",
     "pws": "0.3.1",
     "uuid": "3.0.1",
     "uws": "0.12.0"
