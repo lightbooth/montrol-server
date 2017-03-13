@@ -40,7 +40,10 @@ Device.handle = function(args, ip, mac) {
 
     heartbeat(socket)
 
-    socket.on('close', () => closed(device))
+    socket.on('close', () => {
+      clearInterval(socket.pingTimer)
+      closed(device)
+    })
 
     socket.on('message', function(data) {
       clearTimeout(socket.pongTimeout)
