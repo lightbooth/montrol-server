@@ -21,6 +21,21 @@ html, body {
   background: black;
 }
 
+#desktop {
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  border: 0;
+  width: 800px;
+  height: 480px;
+  opacity: 0.35;
+}
+
+#desktop:hover {
+  opacity: 1;
+}
+
 #status {
   position: absolute;
   top: 0;

@@ -12,6 +12,7 @@
 
   let destination = '~'
 
+  ui.desktop.src = window.location.pathname.split('/terminals')[0] + '/desktop' + window.location.search
   document.title = 'term:' + window.location.pathname.split('/')[2]
 
   const socket = new window.PersistentWebSocket(url)
