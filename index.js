@@ -14,19 +14,7 @@ app.enable('trust proxy')
 
 app.use(morgan('combined'))
 
-app.get('/devices/:mac', (req, res, next) => {
-  req.ws ? Device.handle(req.ws, req.ip, req.params.mac) : next()
-})
-
 app.use(express.static(path.join(__dirname, 'public')))
-
-app.use((req, res, next) => {
-  if (!config.tempPassword || req.query.key === config.tempPassword)
-    return next()
-
-  res.statusCode = 401
-  res.end('Access denied')
-})
 
 app.use('/devices', devices)
 

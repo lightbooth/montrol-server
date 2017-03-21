@@ -3,13 +3,14 @@ const path = require('path')
     , Busboy = require('busboy')
     , express = require('express')
     , FS = require('../models/fs')
+    , auth = require('../middleware/auth')
 
 const router = express.Router()
     , transfers = new Map()
 
 module.exports = router
 
-router.get('/', (req, res, next) => {
+router.get('/', auth, (req, res, next) => {
   const id = uuid.v4().split('-').join('')
 
   res.set('Content-disposition', 'attachment; filename=' + path.basename(req.query.path))
@@ -30,7 +31,7 @@ router.get('/:id', (req, res) => {
   transfer.file.pipe(res)
 })
 
-router.post('/', (req, res) => {
+router.post('/', auth, (req, res) => {
   const busboy = new Busboy({ headers: req.headers })
 
   busboy.on('file', (fieldname, file, filename) => {

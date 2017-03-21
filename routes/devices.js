@@ -6,12 +6,13 @@ const express = require('express')
     , uuid = require('uuid')
     , path = require('path')
     , FS = require('../models/fs')
+    , auth = require('../middleware/auth')
 
 const router = express.Router()
 
 module.exports = router
 
-router.get('/', (req, res) => {
+router.get('/', auth, (req, res) => {
   res.send(Array.from(Device.keys()).map(d => `<p>
     ${d}:
     <a href="/devices/${ d }/terminals/00000000000000000000000000000000?key=${ config.tempPassword }">terminal</a>
@@ -20,25 +21,29 @@ router.get('/', (req, res) => {
   `).join(''))
 })
 
-router.get('/:mac/desktop', (req, res, next) => {
+router.get('/:mac', (req, res, next) => {
+  req.ws ? Device.handle(req.ws, req.ip, req.params.mac) : next()
+})
+
+router.get('/:mac/desktop', auth, (req, res, next) => {
   if (req.ws)
     return Desktop.handle(req.ws, req.params.mac)
 
   res.sendFile(path.join(__dirname, '../public/desktop.html'))
 })
 
-router.post('/:mac/terminals', findDevice, (req, res, next) => {
+router.post('/:mac/terminals', auth, findDevice, (req, res, next) => {
   res.redirect(req.url + '/' + uuid.v4().split('-').join(''))
 })
 
-router.get('/:mac/terminals/:session', (req, res, next) => {
+router.get('/:mac/terminals/:session', auth, (req, res, next) => {
   if (req.ws)
     return Terminal.handle(req.ws, req.params.mac, req.params.session)
 
   res.sendFile(path.join(__dirname, '../public/terminal.html'))
 })
 
-router.get('/:mac/fs', (req, res, next) => {
+router.get('/:mac/fs', auth, (req, res, next) => {
   if (req.ws)
     return FS.handle(req.ws, req.params.mac)
 
