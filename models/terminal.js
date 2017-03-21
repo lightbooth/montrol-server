@@ -8,11 +8,6 @@ const wss = new uws.Server({ noServer: true })
 module.exports = wss
 
 Device.on('terminal', (device, data) => {
-  if (!device.version) {
-    const [message, session, ...rest] = data.split('.')
-    data = session + '.' + message + '.' + rest.join('.')
-  }
-
   const session = data.slice(0, 32)
       , content = data.slice(33)
       , id = device.mac + session
@@ -63,18 +58,7 @@ wss.handle = function(args, mac, session) {
     if (viewers.size === 1)
       connections.set(id, viewers)
 
-    if (device && !device.version)
-      Device.send(mac, 'terminal.open.' + session)
-
     socket.on('message', data => {
-      if (device && !device.version) {
-        if (data.startsWith('input.'))
-          Device.send(mac, 'terminal.input.' + session + '.' + data.slice(6))
-        else if (data.startsWith('resize.'))
-          Device.send(mac, 'terminal.resize.' + session + '.' + data.slice(7))
-        return
-      }
-
       if (data.startsWith('input.'))
         Device.send(mac, 'terminal.' + session + '.input.' + data.slice(6))
       else if (data.startsWith('resize.'))
