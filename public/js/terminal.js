@@ -10,7 +10,7 @@
       , protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://'
       , url = protocol + window.location.host + window.location.pathname + window.location.search
 
-  let destination = '~'
+  let onCWD
 
   ui.desktop.src = window.location.pathname.split('/terminals')[0] + '/desktop' + window.location.search
   document.title = 'term:' + window.location.pathname.split('/')[2]
@@ -29,6 +29,9 @@
     socket.onmessage = e => {
       if (e.data.startsWith('output.'))
         return term.write(e.data.slice(7))
+
+      if (e.data.startsWith('cwd.'))
+        return onCWD ? onCWD(e.data.slice(4)) : log('unhandled cwd', e.data)
 
       log(e.data)
     }
@@ -73,6 +76,12 @@
     if (files.length === 0)
       return window.alert('No files')
 
+    socket.send('cwd')
+    onCWD = uploadFiles.bind(null, files)
+  })
+
+  function uploadFiles(files, destination) {
+    onCWD = null
     const xhr = new XMLHttpRequest()
         , form = new FormData()
 
@@ -82,8 +91,6 @@
 
     const url = window.location.href.split('/terminals')[0]
 
-    destination = window.prompt('Destination', destination) || '~'
-
     xhr.open('POST'
       , url + '/fs' + (window.location.search || '?') + '&path=' + encodeURIComponent(destination)
       , true)
@@ -92,7 +99,7 @@
     xhr.onload = () => log(xhr.status === 200 ? 'Transferred' : 'Error: ' + xhr.status)
     xhr.onerror = err => log(err)
     xhr.send(form)
-  })
+  }
 
   function log() {
     ui.status.innerText = Array.from(arguments).join('\n')
