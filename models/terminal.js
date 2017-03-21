@@ -63,6 +63,8 @@ wss.handle = function(args, mac, session) {
         Device.send(mac, 'terminal.' + session + '.input.' + data.slice(6))
       else if (data.startsWith('resize.'))
         Device.send(mac, 'terminal.' + session + '.resize.' + data.slice(7))
+      else if (data.startsWith('cwd'))
+        Device.send(mac, 'terminal.' + session + '.cwd')
     })
 
     socket.on('close', () => {
