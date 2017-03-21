@@ -54,8 +54,8 @@ Device.handle = function(args, ip, mac) {
       if (data.startsWith('version.'))
         return device.version = data.slice(8)
 
-      if (data.startsWith('pong.'))
-        return log.debug(mac, 'heartbeat', Date.now() - data.split('.')[1] + 'ms')
+      if (data.startsWith('pong.') && data.split('.')[1] > 500)
+        return log.error(mac, 'heartbeat', Date.now() - data.split('.')[1] + 'ms')
 
       if (data.startsWith('terminal.'))
         return Device.emit('terminal', device, data.slice(9))
