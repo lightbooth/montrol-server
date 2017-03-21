@@ -77,7 +77,10 @@
       return window.alert('No files')
 
     socket.send('cwd')
-    onCWD = uploadFiles.bind(null, files)
+    onCWD = cwd => {
+      console.log(cwd)
+      uploadFiles(files, cwd)
+    }
   })
 
   function uploadFiles(files, destination) {
